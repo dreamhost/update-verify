@@ -117,6 +117,9 @@ class CLI {
 			function( $retval, $site_response ) use ( $is_site_response_errored ) {
 				$is_errored = $is_site_response_errored( $site_response, 'pre' );
 				if ( $is_errored ) {
+                                        if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
+                                                \WP_Upgrader::release_lock( 'core_updater' );
+                                        }
 					return new \WP_Error( 'upgrade_verify_fail', $is_errored );
 				}
 				return $retval;

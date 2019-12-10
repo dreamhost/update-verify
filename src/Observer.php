@@ -72,7 +72,17 @@ class Observer {
 	 * @return array Response data.
 	 */
 	public static function check_site_response( $url ) {
-		$response = self::get_site_response( $url );
+               $curl_response = self::url_test( $url );
+
+                if ( false === $curl_response ) {
+                        $response = array(
+                                'status_code' => '418',
+                                'body'        => 'I\'m a little teapot.',
+                        );
+                } else {
+                        $response = self::get_site_response( $url );
+                }
+
 		self::log_message( ' -> HTTP status code: ' . $response['status_code'] );
 		$site_response = array(
 			'status_code'  => $response['status_code'],
@@ -124,5 +134,28 @@ class Observer {
 			'body'        => wp_remote_retrieve_body( $response ),
 		);
 	}
+
+        /**
+         * A basic CURL check first
+         *
+         * @param string $url URL to check.
+         */
+        private function url_test( $url ) {
+                $timeout = 10;
+                $ch = curl_init();
+                curl_setopt ( $ch, CURLOPT_URL, $url );
+                curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+                curl_setopt ( $ch, CURLOPT_TIMEOUT, $timeout );
+                $http_respond = curl_exec($ch);
+                $http_respond = trim( strip_tags( $http_respond ) );
+                $http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+                if ( ( $http_code == "200" ) || ( $http_code == "302" ) ) {
+                        return true;
+                } else {
+                // return $http_code;, possible too
+                return false;
+                }
+                curl_close( $ch );
+        }
 
 }

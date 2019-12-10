@@ -1,9 +1,9 @@
 # Update Verify #
-**Contributors:** danielbachhuber, dreamhost  
+**Contributors:** danielbachhuber, ipstenu, dreamhost  
 **Tags:** wordpress updates  
 **Requires at least:** 4.4  
-**Tested up to:** 4.8  
-**Stable tag:** 0.0.0  
+**Tested up to:** 5.4  
+**Stable tag:** 0.1.0
 **License:** MIT  
 **License URI:** https://opensource.org/licenses/MIT  
 
@@ -75,15 +75,18 @@ Update Verify can be installed as a WP-CLI package or as a WordPress plugin.
 
 Installing as a WP-CLI package means Update Verify can be used globally on a server and will only execute during CLI-based updates:
 
-    wp package install danielbachhuber/update-verify
+    wp package install dreamhost/update-verify
 
 Installing as a plugin to means Update Verify can also be executed during web-based updates:
 
-    wp plugin install --activate https://github.com/danielbachhuber/update-verify
+    wp plugin install --activate https://github.com/dreamhost/update-verify
 
 Both installation methods expose the `wp core safe-update` WP-CLI command, which requires WP-CLI 1.5.0-alpha-d71d228 or newer.
 
 ## Changelog ##
+
+### 0.1.2 (Dec 10, 2019) ###
+* Added new check with pure curl to account for cases when a proxy is down (the HTTP API library makes this a fatal, which breaks further checks)
 
 ### 0.1.1 (??? ??, 2018) ###
 * Updated 'closing </body> tag' detection message to clarify it's a success.
