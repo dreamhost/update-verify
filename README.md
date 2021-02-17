@@ -2,8 +2,8 @@
 **Contributors:** danielbachhuber, ipstenu, dreamhost  
 **Tags:** wordpress updates  
 **Requires at least:** 4.4  
-**Tested up to:** 5.6
-**Stable tag:** 0.1.3
+**Tested up to:** 5.6  
+**Stable tag:** 0.1.3  
 **License:** MIT  
 **License URI:** https://opensource.org/licenses/MIT  
 
