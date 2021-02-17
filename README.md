@@ -2,8 +2,8 @@
 **Contributors:** danielbachhuber, ipstenu, dreamhost  
 **Tags:** wordpress updates  
 **Requires at least:** 4.4  
-**Tested up to:** 5.4  
-**Stable tag:** 0.1.0
+**Tested up to:** 5.6
+**Stable tag:** 0.1.3
 **License:** MIT  
 **License URI:** https://opensource.org/licenses/MIT  
 
@@ -84,6 +84,9 @@ Installing as a plugin to means Update Verify can also be executed during web-ba
 Both installation methods expose the `wp core safe-update` WP-CLI command, which requires WP-CLI 1.5.0-alpha-d71d228 or newer.
 
 ## Changelog ##
+
+### 0.1.3 (Feb 17, 2021) ###
+* Allow IP override for internal DNS.
 
 ### 0.1.2 (Dec 10, 2019) ###
 * Added new check with pure curl to account for cases when a proxy is down (the HTTP API library makes this a fatal, which breaks further checks)

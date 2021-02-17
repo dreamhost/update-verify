@@ -72,16 +72,16 @@ class Observer {
 	 * @return array Response data.
 	 */
 	public static function check_site_response( $url ) {
-               $curl_response = self::url_test( $url );
+		$curl_response = self::url_test( $url );
 
-                if ( false === $curl_response ) {
-                        $response = array(
-                                'status_code' => '418',
-                                'body'        => 'I\'m a little teapot.',
-                        );
-                } else {
-                        $response = self::get_site_response( $url );
-                }
+		if ( false === $curl_response ) {
+			$response = array(
+				'status_code' => '418',
+				'body'        => 'I\'m a little teapot.',
+			);
+		} else {
+			$response = self::get_site_response( $url );
+		}
 
 		self::log_message( ' -> HTTP status code: ' . $response['status_code'] );
 		$site_response = array(
@@ -110,52 +110,66 @@ class Observer {
 	/**
 	 * Capture basic operating details
 	 *
-	 * @param string $check_url URL to check.
+	 * We do this via CURL for access to CURLOPT_RESOLVE, which is needed in
+	 * order to skip around DNS issues.
+	 *
+	 * @param  string $check_url URL to check.
+	 * @return array  status_code (int), body (html)
 	 */
 	private static function get_site_response( $check_url ) {
-		if ( class_exists( 'Requests' ) ) {
-			$response = \Requests::get( $check_url );
-			return array(
-				'status_code' => (int) $response->status_code,
-				'body'        => $response->body,
-			);
-		}
-		$response = wp_remote_post(
-			get_option( 'home' ),
+		$timeout = 10;
+		$ch = curl_init();
+		curl_setopt( $ch, CURLOPT_URL, $check_url );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+		curl_setopt(
+			$ch,
+			CURLOPT_RESOLVE,
 			array(
-				'timeout' => 5,
-			)
+				'www.' . $check_url . ':443:172.16.1.1',
+				$check_url . ':443:172.16.1.1',
+			),
 		);
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-		return array(
-			'status_code' => (int) wp_remote_retrieve_response_code( $response ),
-			'body'        => wp_remote_retrieve_body( $response ),
+
+		// Get the data we need.
+		$raw_body    = curl_exec( $ch );
+		$header_size = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
+		$header      = substr( $raw_body, 0, $header_size );
+		$header      = getHeaders( $header );
+		$http_code   = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		$body        = substr( $raw_body, $header_size );
+
+		curl_close( $ch );
+
+		// Build array.
+		$response = array(
+			'status_code' => (int) $http_code,
+			'body'        => $body,
 		);
+
+		return $response;
 	}
 
-        /**
-         * A basic CURL check first
-         *
-         * @param string $url URL to check.
-         */
-        private function url_test( $url ) {
-                $timeout = 10;
-                $ch = curl_init();
-                curl_setopt ( $ch, CURLOPT_URL, $url );
-                curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
-                curl_setopt ( $ch, CURLOPT_TIMEOUT, $timeout );
-                $http_respond = curl_exec($ch);
-                $http_respond = trim( strip_tags( $http_respond ) );
-                $http_code = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-                if ( ( $http_code == "200" ) || ( $http_code == "302" ) ) {
-                        return true;
-                } else {
-                // return $http_code;, possible too
-                return false;
-                }
-                curl_close( $ch );
-        }
+	/**
+	 * A basic CURL check first
+	 *
+	 * @param string $url URL to check.
+	 */
+	private function url_test( $url ) {
+		$timeout = 10;
+		$ch = curl_init();
+		curl_setopt( $ch, CURLOPT_URL, $url );
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+		$http_respond = curl_exec( $ch );
+		$http_respond = trim( strip_tags( $http_respond ) );
+		$http_code    = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		if ( in_array( $http_code, array( '200', '302' ) ) ) {
+			return true;
+		} else {
+			return false;
+		}
+		curl_close( $ch );
+	}
 
 }

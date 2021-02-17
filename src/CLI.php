@@ -66,7 +66,7 @@ class CLI {
 		};
 
 		if ( version_compare( $current_version, '3.7', '<' ) ) {
-			WP_CLI::log( 'Detected really old WordPress. First updating to version 3.7...' );
+			WP_CLI::log( 'Detected really old WordPress. First updating to version 3.7 ...' );
 			self::load_wp_config();
 			$home_url = self::get_home_url();
 			if ( empty( $home_url ) ) {
@@ -117,9 +117,9 @@ class CLI {
 			function( $retval, $site_response ) use ( $is_site_response_errored ) {
 				$is_errored = $is_site_response_errored( $site_response, 'pre' );
 				if ( $is_errored ) {
-                                        if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
-                                                \WP_Upgrader::release_lock( 'core_updater' );
-                                        }
+					if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
+						\WP_Upgrader::release_lock( 'core_updater' );
+					}
 					return new \WP_Error( 'upgrade_verify_fail', $is_errored );
 				}
 				return $retval;
