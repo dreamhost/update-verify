@@ -131,8 +131,8 @@ class Observer {
 				array(
 					'www.' . $check_url . ':443:' . $ip,
 					$check_url . ':443:' . $ip,
-					'www.' . $check_url . ':' . $ip,
-					$check_url . ':' . $ip,
+					'www.' . $check_url . ':80:' . $ip,
+					$check_url . ':80:' . $ip,
 				),
 			);
 		}
@@ -174,8 +174,8 @@ class Observer {
 				array(
 					'www.' . $url . ':443:' . $ip,
 					$url . ':443:' . $ip,
-					'www.' . $url . ':' . $ip,
-					$url . ':' . $ip,
+					'www.' . $url . ':80:' . $ip,
+					$url . ':80:' . $ip,
 				),
 			);
 		}
