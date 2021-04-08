@@ -61,8 +61,9 @@ class CLI {
 				return sprintf( 'Failed %s-update PHP fatal error check.', $stage );
 			} elseif ( empty( $site_response['closing_body'] ) ) {
 				return sprintf( 'Failed %s-update closing </body> tag check.', $stage );
+			} else {
+				return false;
 			}
-			return false;
 		};
 
 		if ( version_compare( $current_version, '3.7', '<' ) ) {
