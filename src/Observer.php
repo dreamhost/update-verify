@@ -91,7 +91,7 @@ class Observer {
 			'php_fatal'    => false,
 		);
 
-		if ( '418' !== $response['status_code'] ) {
+		if ( 418 !== (int) $response['status_code'] ) {
 			if ( false === stripos( $response['body'], '</body>' ) ) {
 				self::log_message( ' -> No closing </body> tag detected.' );
 				$site_response['closing_body'] = false;
