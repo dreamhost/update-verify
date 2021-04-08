@@ -86,25 +86,19 @@ class Observer {
 		self::log_message( ' -> HTTP status code: ' . $response['status_code'] );
 		$site_response = array(
 			'status_code'  => $response['status_code'],
-			'closing_body' => null,
-			'php_fatal'    => null,
+			'closing_body' => true,
+			'php_fatal'    => false,
 		);
 
 		if ( '418' !== $response['status_code'] ) {
 			if ( false === stripos( $response['body'], '</body>' ) ) {
 				self::log_message( ' -> No closing </body> tag detected.' );
 				$site_response['closing_body'] = false;
-			} else {
-				self::log_message( ' -> Correctly detected closing </body> tag.' );
-				$site_response['closing_body'] = true;
 			}
 			$stripped_body = strip_tags( $response['body'] );
 			if ( false !== stripos( $stripped_body, 'Fatal error:' ) ) {
 				self::log_message( ' -> Detected uncaught fatal error.' );
 				$site_response['php_fatal'] = true;
-			} else {
-				self::log_message( ' -> No uncaught fatal error detected.' );
-				$site_response['php_fatal'] = false;
 			}
 		}
 
@@ -128,6 +122,7 @@ class Observer {
 		curl_setopt( $ch, CURLOPT_URL, $check_url );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+		curl_setopt( $ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false );
 		if ( false !== $ip ) {
 			curl_setopt(
 				$ch,
