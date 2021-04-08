@@ -62,7 +62,7 @@ class CLI {
 			} elseif ( empty( $site_response['closing_body'] ) ) {
 				return sprintf( 'Failed %s-update closing </body> tag check.', $stage );
 			} else {
-				return false;
+				return sprintf( 'Message %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
 			}
 		};
 

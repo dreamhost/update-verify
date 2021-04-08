@@ -84,6 +84,7 @@ class Observer {
 		}
 
 		self::log_message( ' -> HTTP status code: ' . $response['status_code'] );
+
 		$site_response = array(
 			'status_code'  => (int) $response['status_code'],
 			'closing_body' => true,
