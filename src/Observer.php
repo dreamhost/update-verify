@@ -156,9 +156,16 @@ class Observer {
 	 * @param string $url URL to check.
 	 */
 	private function url_test( $url ) {
+
+		// Get IP from environment variable.
+		$ip = getenv( 'RESOLVE_DOMAIN' );
+
 		$timeout = 10;
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $url );
+		if ( false !== $ip ) {
+			curl_setopt( $ch, CURLOPT_RESOLVE, array( $ip ) );
+		}
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
 		$http_respond = curl_exec( $ch );
