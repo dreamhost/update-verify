@@ -134,8 +134,6 @@ class Observer {
 		// Get the data we need.
 		$raw_body    = curl_exec( $ch );
 		$header_size = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
-		$header      = substr( $raw_body, 0, $header_size );
-		$header      = getHeaders( $header );
 		$http_code   = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
 		$body        = substr( $raw_body, $header_size );
 
