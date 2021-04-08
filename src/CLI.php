@@ -55,14 +55,16 @@ class CLI {
 		}
 
 		$is_site_response_errored = function( $site_response, $stage ) {
-			if ( 200 !== $site_response['status_code'] ) {
+			if ( 418 === (int) $site_response['status_code'] ) {
+				return sprintf( 'Message %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
+			} elseif ( 200 !== (int) $site_response['status_code'] ) {
 				return sprintf( 'Failed %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
 			} elseif ( ! empty( $site_response['php_fatal'] ) ) {
 				return sprintf( 'Failed %s-update PHP fatal error check.', $stage );
 			} elseif ( empty( $site_response['closing_body'] ) ) {
 				return sprintf( 'Failed %s-update closing </body> tag check.', $stage );
 			} else {
-				return sprintf( 'Message %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
+				return false;
 			}
 		};
 
