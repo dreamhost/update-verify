@@ -165,9 +165,6 @@ class Observer {
 
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $check_url );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
-		curl_setopt( $ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false );
 		if ( false !== $ip ) {
 			curl_setopt(
 				$ch,
@@ -180,17 +177,21 @@ class Observer {
 				),
 			);
 		}
+		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+
 		// Get the data we need.
-		$raw_body    = curl_exec( $ch );
-		$header_size = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
-		$http_code   = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
-		$body        = substr( $raw_body, $header_size );
+		$raw_body     = curl_exec( $ch );
+		$http_respond = trim( strip_tags( $raw_body ) );
+		$http_code    = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
+		$header_size  = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
+		$body         = substr( $raw_body, $header_size );
 
 		curl_close( $ch );
 
 		// Build array.
 		$response = array(
-			'status_code' => (int) $http_code,
+			'status_code' => $http_code,
 			'body'        => $body,
 		);
 
@@ -230,7 +231,7 @@ class Observer {
 		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
 		$http_respond = curl_exec( $ch );
 		$http_respond = trim( strip_tags( $http_respond ) );
-		$http_code    = curl_getinfo( $ch, CURLINFO_HTTP_CODE );
+		$http_code    = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
 		if ( in_array( $http_code, array( '200', '302' ) ) ) {
 			return true;
 		} else {
