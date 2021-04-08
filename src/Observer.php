@@ -31,6 +31,23 @@ class Observer {
 		 * @param WP_Upgrader $upgrader      The WP_Upgrader instance.
 		 */
 		$retval = apply_filters( 'upgrade_verify_upgrader_pre_download', $retval, $site_response, $package, $upgrader );
+		$stage  = 'pre';
+
+		if ( 200 !== (int) $site_response['status_code'] ) {
+			$is_errored = sprintf( 'Failed %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
+		} elseif ( ! empty( $site_response['php_fatal'] ) ) {
+			$is_errored = sprintf( 'Failed %s-update PHP fatal error check.', $stage );
+		} elseif ( empty( $site_response['closing_body'] ) ) {
+			$is_errored = sprintf( 'Failed %s-update closing </body> tag check.', $stage );
+		}
+
+		if ( $is_errored ) {
+			if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
+				\WP_Upgrader::release_lock( 'core_updater' );
+			}
+			return new \WP_Error( 'upgrade_verify_fail', $is_errored );
+		}
+
 		return $retval;
 	}
 
@@ -43,6 +60,24 @@ class Observer {
 	public static function action_upgrader_process_complete( $upgrader, $result ) {
 		self::log_message( 'Fetching post-update site response...' );
 		$site_response = self::check_site_response( home_url( '/' ) );
+
+		$stage  = 'post';
+
+		if ( 200 !== (int) $site_response['status_code'] ) {
+			$is_errored = sprintf( 'Failed %s-update status code check (HTTP code %d).', $stage, $site_response['status_code'] );
+		} elseif ( ! empty( $site_response['php_fatal'] ) ) {
+			$is_errored = sprintf( 'Failed %s-update PHP fatal error check.', $stage );
+		} elseif ( empty( $site_response['closing_body'] ) ) {
+			$is_errored = sprintf( 'Failed %s-update closing </body> tag check.', $stage );
+		}
+
+		if ( $is_errored ) {
+			if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
+				\WP_Upgrader::release_lock( 'core_updater' );
+			}
+			return new \WP_Error( 'upgrade_verify_fail', $is_errored );
+		}
+
 		/**
 		 * Permit action based on the post-update site response check.
 		 *
