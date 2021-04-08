@@ -109,7 +109,7 @@ class Observer {
 			}
 		} else {
 			self::log_message( ' -> ' . $response['body'] );
-			$site_response['php_fatal'] = false;
+			$site_response['php_fatal'] = true;
 		}
 
 		return $site_response;
