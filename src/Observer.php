@@ -95,12 +95,21 @@ class Observer {
 			if ( false === stripos( $response['body'], '</body>' ) ) {
 				self::log_message( ' -> No closing </body> tag detected.' );
 				$site_response['closing_body'] = false;
+			} else {
+				self::log_message( ' -> Correctly detected closing </body> tag.' );
+				$site_response['closing_body'] = true;
 			}
 			$stripped_body = strip_tags( $response['body'] );
 			if ( false !== stripos( $stripped_body, 'Fatal error:' ) ) {
 				self::log_message( ' -> Detected uncaught fatal error.' );
 				$site_response['php_fatal'] = true;
+			} else {
+				self::log_message( ' -> No uncaught fatal error detected.' );
+				$site_response['php_fatal'] = false;
 			}
+		} else {
+			self::log_message( ' -> ' . $response['body'] );
+			$site_response['php_fatal'] = false;
 		}
 
 		return $site_response;
