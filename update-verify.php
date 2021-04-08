@@ -7,7 +7,7 @@
  * Author URI:      https://danielbachhuber.com
  * Text Domain:     update-verify
  * Domain Path:     /languages
- * Version:         0.1.0
+ * Version:         0.2.0
  * License:         GPL v2+
  *
  * @package Update-Verify

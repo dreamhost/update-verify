@@ -85,6 +85,9 @@ Both installation methods expose the `wp core safe-update` WP-CLI command, which
 
 ## Changelog ##
 
+### 0.2.0 ( April 8, 2021) ###
+* Finishing IP override and better fails in all cases.
+
 ### 0.1.3 (Feb 17, 2021) ###
 * Allow IP override for internal DNS.
 
