@@ -111,7 +111,7 @@ class Observer {
 
 		if ( false === $curl_response ) {
 			$response = array(
-				'status_code' => '418',
+				'status_code' => 418,
 				'body'        => 'I\'m a little teapot.',
 			);
 		} else {
@@ -121,12 +121,12 @@ class Observer {
 		self::log_message( ' -> HTTP status code: ' . $response['status_code'] );
 
 		$site_response = array(
-			'status_code'  => (int) $response['status_code'],
+			'status_code'  => $response['status_code'],
 			'closing_body' => true,
 			'php_fatal'    => false,
 		);
 
-		if ( 418 !== (int) $response['status_code'] ) {
+		if ( 418 !== $response['status_code'] ) {
 			if ( false === stripos( $response['body'], '</body>' ) ) {
 				self::log_message( ' -> No closing </body> tag detected.' );
 				$site_response['closing_body'] = false;
