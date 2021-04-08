@@ -118,19 +118,24 @@ class Observer {
 	 */
 	private static function get_site_response( $check_url ) {
 		$timeout = 10;
+		$ip      = getenv( 'RESOLVE_DOMAIN' );
+
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $check_url );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
-		curl_setopt(
-			$ch,
-			CURLOPT_RESOLVE,
-			array(
-				'www.' . $check_url . ':443:172.16.1.1',
-				$check_url . ':443:172.16.1.1',
-			),
-		);
-
+		if ( false !== $ip ) {
+			curl_setopt(
+				$ch,
+				CURLOPT_RESOLVE,
+				array(
+					'www.' . $check_url . ':443:' . $ip,
+					$check_url . ':443:' . $ip,
+					'www.' . $check_url . ':' . $ip,
+					$check_url . ':' . $ip,
+				),
+			);
+		}
 		// Get the data we need.
 		$raw_body    = curl_exec( $ch );
 		$header_size = curl_getinfo( $ch, CURLINFO_HEADER_SIZE );
@@ -163,6 +168,16 @@ class Observer {
 		curl_setopt( $ch, CURLOPT_URL, $url );
 		if ( false !== $ip ) {
 			curl_setopt( $ch, CURLOPT_RESOLVE, array( $ip ) );
+			curl_setopt(
+				$ch,
+				CURLOPT_RESOLVE,
+				array(
+					'www.' . $url . ':443:' . $ip,
+					$url . ':443:' . $ip,
+					'www.' . $url . ':' . $ip,
+					$url . ':' . $ip,
+				),
+			);
 		}
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
 		curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
