@@ -160,8 +160,9 @@ class Observer {
 	 * @return array  status_code (int), body (html)
 	 */
 	private static function get_site_response( $check_url ) {
-		$timeout = 10;
-		$ip      = getenv( 'RESOLVE_DOMAIN' );
+		$timeout    = 10;
+		$ip         = getenv( 'RESOLVE_DOMAIN' );
+		$parsed_url = wp_parse_url( $check_url );
 
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $check_url );
@@ -170,10 +171,10 @@ class Observer {
 				$ch,
 				CURLOPT_RESOLVE,
 				array(
-					'www.' . $check_url . ':443:' . $ip,
-					$check_url . ':443:' . $ip,
-					'www.' . $check_url . ':80:' . $ip,
-					$check_url . ':80:' . $ip,
+					'www.' . $parsed_url['host'] . ':443:' . $ip,
+					$parsed_url['host'] . ':443:' . $ip,
+					'www.' . $parsed_url['host'] . ':80:' . $ip,
+					$parsed_url['host'] . ':80:' . $ip,
 				),
 			);
 		}
@@ -191,7 +192,7 @@ class Observer {
 
 		// Build array.
 		$response = array(
-			'status_code' => $http_code,
+			'status_code' => (int) $http_code,
 			'body'        => $body,
 		);
 
