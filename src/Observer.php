@@ -163,6 +163,9 @@ class Observer {
 		// Get IP from environment variable.
 		$ip = getenv( 'RESOLVE_DOMAIN' );
 
+		// parse URL.
+		$parsed_url = wp_parse_url( $url );
+
 		$timeout = 10;
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $url );
@@ -172,10 +175,10 @@ class Observer {
 				$ch,
 				CURLOPT_RESOLVE,
 				array(
-					'www.' . $url . ':443:' . $ip,
-					$url . ':443:' . $ip,
-					'www.' . $url . ':80:' . $ip,
-					$url . ':80:' . $ip,
+					'www.' . $parsed_url['host'] . ':443:' . $ip,
+					$parsed_url['host'] . ':443:' . $ip,
+					'www.' . $parsed_url['host'] . ':80:' . $ip,
+					$parsed_url['host'] . ':80:' . $ip,
 				),
 			);
 		}
