@@ -41,7 +41,7 @@ class Observer {
 			$is_errored = sprintf( 'Failed %s-update closing </body> tag check.', $stage );
 		}
 
-		if ( $is_errored ) {
+		if ( isset( $is_errored ) ) {
 			if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
 				\WP_Upgrader::release_lock( 'core_updater' );
 			}
@@ -71,7 +71,7 @@ class Observer {
 			$is_errored = sprintf( 'Failed %s-update closing </body> tag check.', $stage );
 		}
 
-		if ( $is_errored ) {
+		if ( isset( $is_errored ) ) {
 			if ( method_exists( 'WP_Upgrader', 'release_lock' ) ) {
 				\WP_Upgrader::release_lock( 'core_updater' );
 			}
