@@ -204,7 +204,7 @@ class Observer {
 	 *
 	 * @param string $url URL to check.
 	 */
-	private function url_test( $url ) {
+	private static function url_test( $url ) {
 
 		// Get IP from environment variable.
 		$ip = getenv( 'RESOLVE_DOMAIN' );
