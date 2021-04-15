@@ -175,7 +175,7 @@ class Observer {
 					$parsed_url['host'] . ':443:' . $ip,
 					'www.' . $parsed_url['host'] . ':80:' . $ip,
 					$parsed_url['host'] . ':80:' . $ip,
-				),
+				)
 			);
 		}
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -225,7 +225,7 @@ class Observer {
 					$parsed_url['host'] . ':443:' . $ip,
 					'www.' . $parsed_url['host'] . ':80:' . $ip,
 					$parsed_url['host'] . ':80:' . $ip,
-				),
+				)
 			);
 		}
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
