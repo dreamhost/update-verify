@@ -233,6 +233,10 @@ class Observer {
 		$http_respond = curl_exec( $ch );
 		$http_respond = trim( strip_tags( $http_respond ) );
 		$http_code    = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
+
+		// Echo response for debugging.
+		echo 'Response: ' . esc_attr( $http_code ) . '\n';
+
 		if ( in_array( $http_code, array( '200', '302' ) ) ) {
 			return true;
 		} else {
