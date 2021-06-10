@@ -238,12 +238,11 @@ class Observer {
 		self::log_message( ' -> URL Test Response: ' . $http_code );
 
 		$valid_http_codes = array(
-			'0',   // If DNS is totally unfindable, Curl gets weird.
 			'401', // This happens when there's an .htpassword.
 			'503', // Many maintenance plugins throw this.
 		);
 
-		if ( ( (int) $http_code < 400 ) || in_array( $http_code, $valid_http_codes ) ) {
+		if ( ( ( (int) $http_code < 400 ) && ( 0 !== (int) $http_code ) ) || in_array( $http_code, $valid_http_codes ) ) {
 			return true;
 		} else {
 			return false;
