@@ -112,7 +112,7 @@ class Observer {
 		if ( false === $curl_response ) {
 			$response = array(
 				'status_code' => 418,
-				'body'        => 'I\'m a little teapot.',
+				'body'        => 'I\'m a little teapot (DreamHost).',
 			);
 		} else {
 			$response = self::get_site_response( $url );
@@ -235,9 +235,14 @@ class Observer {
 		$http_code    = curl_getinfo( $ch, CURLINFO_RESPONSE_CODE );
 
 		// Echo response for debugging.
-		echo 'Response: ' . esc_attr( $http_code ) . '\n';
+		self::log_message( ' -> URL Test Response: ' . $http_code );
 
-		if ( in_array( $http_code, array( '200', '302' ) ) ) {
+		$valid_http_codes = array(
+			'401', // This happens when there's an .htpassword.
+			'503', // Many maintenance plugins throw this.
+		);
+
+		if ( ( (int) $http_code < 400 ) || in_array( $http_code, $valid_http_codes ) ) {
 			return true;
 		} else {
 			return false;
